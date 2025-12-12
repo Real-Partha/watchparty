@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: watchparty-signaling
+    env: node
+    region: oregon
+    plan: free
+    rootDir: server
+    buildCommand: npm ci && npm run build
+    startCommand: node dist/index.js
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ORIGIN
+        value: "*"

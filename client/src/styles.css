@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+:root {
+  color-scheme: dark;
+}
+
+/* Fancy gradient background for hero */
+.hero-bg {
+  background: radial-gradient(1000px 500px at 10% -10%, rgba(6, 182, 212, 0.25), transparent 40%),
+              radial-gradient(800px 400px at 100% 10%, rgba(34, 211, 238, 0.2), transparent 40%),
+              radial-gradient(600px 300px at 30% 120%, rgba(8, 145, 178, 0.15), transparent 45%);
+}

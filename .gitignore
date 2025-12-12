@@ -1,0 +1,36 @@
+# Node & package managers
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# OS & editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Test/coverage/caches
+coverage/
+.cache/
+.turbo/
+**/*.tsbuildinfo
+
+# Vercel local config
+.vercel/
+
+# Monorepo build outputs
+client/dist/
+client/.vite/
+client/.cache/
+
+server/dist/
+
+# Misc
+*.log
