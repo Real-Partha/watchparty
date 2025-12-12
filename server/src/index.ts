@@ -14,9 +14,31 @@ const ORIGIN = process.env.ORIGIN || '*';
 const SSL_CERT_FILE = process.env.SSL_CERT_FILE;
 const SSL_KEY_FILE = process.env.SSL_KEY_FILE;
 
+function buildCors() {
+  const val = ORIGIN;
+  if (!val || val.trim() === '*') {
+    return { origin: '*', credentials: false } as const;
+  }
+  const parts = val.split(',').map(s => s.trim()).filter(Boolean);
+  const origins = parts.map(p => {
+    if (p.includes('*.') && p.startsWith('http')) {
+      try {
+        const host = p.replace(/^https?:\/\//, '').replace(/^\*\./, '');
+        const escaped = host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return new RegExp(`^https?:\/\/([a-zA-Z0-9-]+\.)*${escaped}$`);
+      } catch {
+        return p;
+      }
+    }
+    return p;
+  });
+  return { origin: origins.length === 1 ? origins[0] : origins, credentials: true } as const;
+}
+
 const app = express();
 app.use(helmet());
-app.use(cors({ origin: ORIGIN, methods: ['GET', 'POST'], credentials: true }));
+const expressCors = buildCors();
+app.use(cors({ origin: expressCors.origin as any, methods: ['GET', 'POST'], credentials: expressCors.credentials }));
 app.get('/', (_req: Request, res: Response) => {
   res.send({ status: 'ok', name: 'watchparty-signaling', version: '0.1.0' });
 });
@@ -36,9 +58,10 @@ if (SSL_CERT_FILE && SSL_KEY_FILE) {
 } else {
   server = http.createServer(app);
 }
+const socketCors = buildCors();
 const io = new Server(server, {
   cors: {
-    origin: ORIGIN,
+    origin: socketCors.origin as any,
     methods: ['GET', 'POST']
   }
 });
